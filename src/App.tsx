@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { css, jsx } from '@emotion/core'
 import Button from './Button'
+import Link from './Link'
 import { MINUTE, SECOND } from './constants'
 import { getDuration } from './utils'
 
@@ -124,23 +125,9 @@ const App: React.FC = () => {
         `}
       >
         <span>
-          Made by{' '}
-          <a
-            href="https://github.com/aofleejay"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            aofleejay
-          </a>
-          . | View code on{' '}
-          <a
-            href="https://github.com/aofleejay/pomod"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            GitHub
-          </a>
-          .
+          Made by <Link to="https://github.com/aofleejay">aofleejay</Link>. |
+          View code on{' '}
+          <Link to="https://github.com/aofleejay/pomod">GitHub</Link>.
         </span>
       </footer>
     </div>
