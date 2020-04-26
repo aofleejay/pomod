@@ -4,14 +4,36 @@ const SECOND = 1000
 const MINUTE = 60 * SECOND
 const BASE_WORKTIME = 25 * MINUTE
 
+enum TimerState {
+  START = 'start',
+  STOP = 'stop',
+}
+
 const App: React.FC = () => {
   const [timeLeft, setTimeLeft] = useState(BASE_WORKTIME)
-  const [timerState, setTimerState] = useState('stop')
+  const [timerState, setTimerState] = useState(TimerState.STOP)
   const interval = useRef<number | undefined>()
+
+  const getTimeLeft = () => {
+    return {
+      minutes: Math.floor(timeLeft / MINUTE)
+        .toString()
+        .padStart(2, '0'),
+      seconds: Math.floor((timeLeft % MINUTE) / SECOND)
+        .toString()
+        .padStart(2, '0'),
+    }
+  }
+
+  const { minutes, seconds } = getTimeLeft()
+
+  useEffect(() => {
+    document.title = `Pomod - ${minutes}:${seconds}`
+  }, [minutes, seconds])
 
   useEffect(() => {
     return () => {
-      setTimerState('stop')
+      setTimerState(TimerState.STOP)
       if (interval.current) {
         clearInterval(interval.current)
       }
@@ -20,7 +42,7 @@ const App: React.FC = () => {
 
   const countdown = () => {
     setTimeLeft((prevTimeLeft) => {
-      if (prevTimeLeft - SECOND <= 0 && interval) {
+      if (prevTimeLeft - SECOND <= 0 && interval.current) {
         clearInterval(interval.current)
         return BASE_WORKTIME
       }
@@ -28,31 +50,17 @@ const App: React.FC = () => {
     })
   }
 
-  const formatDigit = (digit: number): string => {
-    return digit.toString().padStart(2, '0')
-  }
-
-  const getTimeLeft = () => {
-    return {
-      minutes: Math.floor(timeLeft / MINUTE),
-      seconds: Math.floor((timeLeft % MINUTE) / SECOND),
-    }
-  }
-
   const toggleTimer = () => {
-    console.log(interval)
-    if (timerState === 'stop') {
+    if (timerState === TimerState.STOP) {
       interval.current = window.setInterval(countdown, SECOND)
-      setTimerState('start')
+      setTimerState(TimerState.START)
     } else {
       if (interval.current) {
         window.clearInterval(interval.current)
       }
-      setTimerState('stop')
+      setTimerState(TimerState.STOP)
     }
   }
-
-  const { minutes, seconds } = getTimeLeft()
 
   return (
     <div
@@ -65,13 +73,14 @@ const App: React.FC = () => {
         alignItems: 'center',
         backgroundColor: 'salmon',
         color: '#ffffff',
+        textTransform: 'uppercase',
       }}
     >
-      <h1>POMOD</h1>
+      <h1>Pomod</h1>
       <div style={{ marginBottom: '1rem' }}>
-        <span>{formatDigit(minutes)}</span>
+        <span>{minutes}</span>
         <span>:</span>
-        <span>{formatDigit(seconds)}</span>
+        <span>{seconds}</span>
       </div>
       <button
         onClick={toggleTimer}
@@ -81,9 +90,10 @@ const App: React.FC = () => {
           padding: '0.5rem 1rem',
           borderRadius: 4,
           cursor: 'pointer',
+          textTransform: 'uppercase',
         }}
       >
-        {timerState === 'stop' ? 'start' : 'stop'}
+        {timerState === TimerState.STOP ? TimerState.START : TimerState.STOP}
       </button>
     </div>
   )
