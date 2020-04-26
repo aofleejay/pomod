@@ -17,7 +17,7 @@ const Button: React.FC<ButtonProps> = ({ onClick, children }) => {
         border-radius: 4px;
         cursor: pointer;
         text-transform: uppercase;
-        box-shadow: 0 6px 6px -6px #000000;
+        box-shadow: 0 6px 6px -6px var(--black);
         font-family: inherit;
         font-size: 1rem;
       `}

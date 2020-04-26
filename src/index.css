@@ -5,4 +5,10 @@ body {
     'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  --primary-color: #ff8c69;
+  --primary-color-light: #ffa683;
+  --secondary-color: #802050;
+  --black: #222222;
+  --white: #eeeeee;
 }

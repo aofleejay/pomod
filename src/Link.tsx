@@ -17,7 +17,7 @@ const Link: React.FC<LinkProps> = ({ children, to }) => {
         transition: color 0.5s ease-out;
 
         &:hover {
-          color: #802050;
+          color: var(--secondary-color);
         }
       `}
     >

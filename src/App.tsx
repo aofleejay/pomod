@@ -67,10 +67,10 @@ const App: React.FC = () => {
         justify-content: center;
         align-items: center;
         background: linear-gradient(
-          rgba(255, 140, 105, 0.8),
-          rgba(255, 140, 105)
+          var(--primary-color-light),
+          var(--primary-color)
         );
-        color: #ffffff;
+        color: var(--white);
       `}
     >
       <h1
