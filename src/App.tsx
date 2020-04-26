@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 
 const SECOND = 1000
 const MINUTE = 60 * SECOND
@@ -6,29 +6,26 @@ const BASE_WORKTIME = 25 * MINUTE
 
 const App: React.FC = () => {
   const [timeLeft, setTimeLeft] = useState(BASE_WORKTIME)
-  let interval: NodeJS.Timeout | undefined
+  const [timerState, setTimerState] = useState('stop')
+  const interval = useRef<number | undefined>()
 
   useEffect(() => {
     return () => {
-      if (interval) {
-        clearInterval(interval)
+      setTimerState('stop')
+      if (interval.current) {
+        clearInterval(interval.current)
       }
     }
-  }, [interval])
+  }, [])
 
   const countdown = () => {
     setTimeLeft((prevTimeLeft) => {
       if (prevTimeLeft - SECOND <= 0 && interval) {
-        clearInterval(interval)
-        return 0
+        clearInterval(interval.current)
+        return BASE_WORKTIME
       }
       return prevTimeLeft - SECOND
     })
-  }
-
-  const onStartTimer = () => {
-    countdown()
-    interval = setInterval(countdown, SECOND)
   }
 
   const formatDigit = (digit: number): string => {
@@ -42,6 +39,19 @@ const App: React.FC = () => {
     }
   }
 
+  const toggleTimer = () => {
+    console.log(interval)
+    if (timerState === 'stop') {
+      interval.current = window.setInterval(countdown, SECOND)
+      setTimerState('start')
+    } else {
+      if (interval.current) {
+        window.clearInterval(interval.current)
+      }
+      setTimerState('stop')
+    }
+  }
+
   const { minutes, seconds } = getTimeLeft()
 
   return (
@@ -49,7 +59,9 @@ const App: React.FC = () => {
       <span>{formatDigit(minutes)}</span>
       <span>:</span>
       <span>{formatDigit(seconds)}</span>
-      <button onClick={onStartTimer}>start</button>
+      <button onClick={toggleTimer}>
+        {timerState === 'stop' ? 'start' : 'stop'}
+      </button>
     </div>
   )
 }
