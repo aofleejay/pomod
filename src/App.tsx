@@ -71,13 +71,22 @@ const App: React.FC = () => {
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'salmon',
+        background:
+          'linear-gradient(rgba(255, 140, 105, 0.8), rgba(255, 140, 105))',
         color: '#ffffff',
-        textTransform: 'uppercase',
       }}
     >
-      <h1>Pomod</h1>
-      <div style={{ marginBottom: '1rem' }}>
+      <h1
+        style={{
+          marginTop: 0,
+          marginBottom: '3rem',
+          fontSize: '3rem',
+          textTransform: 'uppercase',
+        }}
+      >
+        Pomod
+      </h1>
+      <div style={{ marginBottom: '2rem', fontSize: '2rem' }}>
         <span>{minutes}</span>
         <span>:</span>
         <span>{seconds}</span>
@@ -91,10 +100,40 @@ const App: React.FC = () => {
           borderRadius: 4,
           cursor: 'pointer',
           textTransform: 'uppercase',
+          boxShadow: '0 6px 6px -6px #000000',
+          fontFamily: 'inherit',
+          fontSize: '1rem',
         }}
       >
         {timerState === TimerState.STOP ? TimerState.START : TimerState.STOP}
       </button>
+      <footer
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          position: 'absolute',
+          bottom: '1rem',
+        }}
+      >
+        <span>
+          Made by{' '}
+          <a
+            href="https://github.com/aofleejay"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            aofleejay
+          </a>
+          . | View code on{' '}
+          <a
+            href="https://github.com/aofleejay/pomod"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            GitHub
+          </a>
+        </span>
+      </footer>
     </div>
   )
 }
