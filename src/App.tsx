@@ -1,119 +1,127 @@
+/** @jsx jsx */
 import React, { useState, useEffect, useRef } from 'react'
+import { css, jsx } from '@emotion/core'
+import Button from './Button'
+import { MINUTE, SECOND } from './constants'
+import { getDuration } from './utils'
 
-const SECOND = 1000
-const MINUTE = 60 * SECOND
-const BASE_WORKTIME = 25 * MINUTE
+const WORK_DURATION = 25 * MINUTE
+const BREAK_DURATION = 5 * MINUTE
 
 enum TimerState {
-  START = 'start',
-  STOP = 'stop',
+  STARTED = 'started',
+  STOPPED = 'stopped',
 }
 
 const App: React.FC = () => {
-  const [timeLeft, setTimeLeft] = useState(BASE_WORKTIME)
-  const [timerState, setTimerState] = useState(TimerState.STOP)
+  const [remainingTime, setRemainingTime] = useState(WORK_DURATION)
+  const [timerState, setTimerState] = useState(TimerState.STOPPED)
   const interval = useRef<number | undefined>()
 
-  const getTimeLeft = () => {
-    return {
-      minutes: Math.floor(timeLeft / MINUTE)
-        .toString()
-        .padStart(2, '0'),
-      seconds: Math.floor((timeLeft % MINUTE) / SECOND)
-        .toString()
-        .padStart(2, '0'),
-    }
-  }
-
-  const { minutes, seconds } = getTimeLeft()
+  const { minutes, seconds } = getDuration(remainingTime)
 
   useEffect(() => {
-    document.title = `Pomod - ${minutes}:${seconds}`
-  }, [minutes, seconds])
+    document.title =
+      timerState === TimerState.STARTED
+        ? `Pomod - ${minutes}:${seconds}`
+        : `Pomod - Timer stopped`
+  }, [minutes, seconds, timerState])
 
   useEffect(() => {
     return () => {
-      setTimerState(TimerState.STOP)
+      setTimerState(TimerState.STOPPED)
       if (interval.current) {
         clearInterval(interval.current)
       }
     }
   }, [])
 
-  const countdown = () => {
-    setTimeLeft((prevTimeLeft) => {
-      if (prevTimeLeft - SECOND <= 0 && interval.current) {
+  const startTimer = () => {
+    setRemainingTime((prevRemainingTime) => {
+      if (prevRemainingTime - SECOND <= 0 && interval.current) {
         clearInterval(interval.current)
-        return BASE_WORKTIME
+        return 0
       }
-      return prevTimeLeft - SECOND
+      return prevRemainingTime - SECOND
     })
   }
 
-  const toggleTimer = () => {
-    if (timerState === TimerState.STOP) {
-      interval.current = window.setInterval(countdown, SECOND)
-      setTimerState(TimerState.START)
-    } else {
-      if (interval.current) {
-        window.clearInterval(interval.current)
-      }
-      setTimerState(TimerState.STOP)
+  const setupTimer = (duration: number) => {
+    if (interval.current) {
+      clearInterval(interval.current)
     }
+
+    setRemainingTime(duration)
+    interval.current = window.setInterval(startTimer, SECOND)
+    setTimerState(TimerState.STARTED)
   }
 
   return (
     <div
-      style={{
-        width: '100vw',
-        height: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        background:
-          'linear-gradient(rgba(255, 140, 105, 0.8), rgba(255, 140, 105))',
-        color: '#ffffff',
-      }}
+      css={css`
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(
+          rgba(255, 140, 105, 0.8),
+          rgba(255, 140, 105)
+        );
+        color: #ffffff;
+      `}
     >
       <h1
-        style={{
-          marginTop: 0,
-          marginBottom: '3rem',
-          fontSize: '3rem',
-          textTransform: 'uppercase',
-        }}
+        css={css`
+          margin-top 0;
+          margin-bottom: 3rem;
+          fon-size: 3rem;
+          text-transform: uppercase;
+        `}
       >
         Pomod
       </h1>
-      <div style={{ marginBottom: '2rem', fontSize: '2rem' }}>
+      <div
+        css={css`
+          margin-bottom: 2rem;
+          font-size: 2rem;
+        `}
+      >
         <span>{minutes}</span>
         <span>:</span>
         <span>{seconds}</span>
       </div>
-      <button
-        onClick={toggleTimer}
-        style={{
-          border: 'none',
-          outline: 'none',
-          padding: '0.5rem 1rem',
-          borderRadius: 4,
-          cursor: 'pointer',
-          textTransform: 'uppercase',
-          boxShadow: '0 6px 6px -6px #000000',
-          fontFamily: 'inherit',
-          fontSize: '1rem',
-        }}
+      <div
+        css={css`
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          grid-template-rows: 1fr;
+          grid-gap: 1rem;
+        `}
       >
-        {timerState === TimerState.STOP ? TimerState.START : TimerState.STOP}
-      </button>
+        <Button
+          onClick={() => {
+            setupTimer(WORK_DURATION)
+          }}
+        >
+          Get to work
+        </Button>
+        <Button
+          onClick={() => {
+            setupTimer(BREAK_DURATION)
+          }}
+        >
+          Take a break
+        </Button>
+      </div>
       <footer
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          position: 'absolute',
-          bottom: '1rem',
-        }}
+        css={css`
+          display: flex;
+          justify-content: space-between;
+          position: absolute;
+          bottom: 1rem;
+        `}
       >
         <span>
           Made by{' '}
@@ -132,6 +140,7 @@ const App: React.FC = () => {
           >
             GitHub
           </a>
+          .
         </span>
       </footer>
     </div>
