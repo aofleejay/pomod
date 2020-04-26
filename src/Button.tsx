@@ -20,6 +20,8 @@ const Button: React.FC<ButtonProps> = ({ onClick, children }) => {
         box-shadow: 0 6px 6px -6px var(--black);
         font-family: inherit;
         font-size: 1rem;
+        background-color: var(--white);
+        color: var(--black);
       `}
     >
       {children}
