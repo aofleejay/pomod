@@ -55,11 +55,34 @@ const App: React.FC = () => {
   const { minutes, seconds } = getTimeLeft()
 
   return (
-    <div>
-      <span>{formatDigit(minutes)}</span>
-      <span>:</span>
-      <span>{formatDigit(seconds)}</span>
-      <button onClick={toggleTimer}>
+    <div
+      style={{
+        width: '100vw',
+        height: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'salmon',
+        color: '#ffffff',
+      }}
+    >
+      <h1>POMOD</h1>
+      <div style={{ marginBottom: '1rem' }}>
+        <span>{formatDigit(minutes)}</span>
+        <span>:</span>
+        <span>{formatDigit(seconds)}</span>
+      </div>
+      <button
+        onClick={toggleTimer}
+        style={{
+          border: 'none',
+          outline: 'none',
+          padding: '0.5rem 1rem',
+          borderRadius: 4,
+          cursor: 'pointer',
+        }}
+      >
         {timerState === 'stop' ? 'start' : 'stop'}
       </button>
     </div>
